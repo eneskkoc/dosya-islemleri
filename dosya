@@ -1,0 +1,667 @@
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void menu(void);
+void ekle_ogrenci(void);
+void listele_sinif(void);
+void listele_bolum(void);
+int Guncelle();
+void ekle_ogretim(void);
+void listele_ogretimbol(void);
+int Guncelle_ogretim();
+void ekle_ders(void);
+void listele_ders(void);
+int Guncelle_ders();
+void ekle_not(void);
+void ekle_not1(void);
+void arama();
+
+
+struct ogrenci{
+	char ad[30];
+	char soyad[30];
+	char numara[12];
+	char bolum[20];
+	char sinif[10];
+}kayit,kayitlar[40];
+struct ogretim
+{
+    char ad[30];
+	char soyad[30];
+	char sicil[12];
+	char bolum[20];
+
+}kayit1,kayitlar1[40];
+struct ders
+{
+    char ad[30];
+	char bolum[20];
+	char ogretmen_ad[40];
+
+}kayit2,kayitlar2[40];
+struct notlar
+{
+    char ad[30];
+    char soyad[30];
+    char numara[12];
+    char bolum[20];
+	char ders_ad[40];
+	char not1[10];
+
+}kayit3;
+
+int eklenen=0,sayac1=0;
+
+main(){
+	menu();
+}
+
+void menu(){
+int secim;
+printf("\t\t\t\t\tOGRENCI\n\n");
+printf("1-Ekle /// 2-Sinifa Gore Listele ///3-guncelle///4-arama///5-Bolume Gore Listele\n");
+printf("/////////////////////////////////////////////////////////////////////////\n\n");
+printf("\t\t\t\t\tOGRETIM\n\n");
+printf("6-Ekle///7-Bolume Gore Listele///8-Guncelle\n\n");
+printf("////////////////////////////////////////////////////////////////////////\n\n");
+printf("\t\t\t\t\tDERS\n\n");
+printf("9-Ekle///A-Ders Listele///B-Ders Guncelle\n\n");
+printf("\t\t\t\t\tNOT\n\n");
+printf("////////////////////////////////////////////////////////////////////////\n\n");
+printf("C-Ogrenci Ders Ekle///D-Ogrenci Not Ekle\n\n");
+printf("Seciminiz? : "); secim=getch();
+
+  switch (secim){
+   case '1':system("cls"); ekle_ogrenci(); menu(); break;     
+   case '2':listele_sinif(); menu(); break;
+   case '3': Guncelle(); menu(); break;
+   case '4': arama(); menu(); break;
+   case '5': listele_bolum(); menu(); break;
+   case '6': ekle_ogretim(); menu(); break;
+   case '7': listele_ogretimbol();menu(); break;
+   case '8':Guncelle_ogretim();menu(); break;
+   case '9':ekle_ders();menu(); break;
+   case 'a': listele_ders();menu(); break;
+   case 'b':Guncelle_ders();menu(); break;
+   case 'c':ekle_not();menu(); break;
+   case 'd':ekle_not1();menu(); break;
+   default:system("cls"); printf("Hatali Secim!\n\n"); menu();
+  }
+
+}
+
+void ekle_ogrenci(void){
+
+FILE *dosya;
+
+system("cls");
+
+printf("            KAYIT EKLE\n");
+printf("\nAd : "); fflush(stdin); gets(kayit.ad);
+printf("\nSoyad : "); fflush(stdin); gets(kayit.soyad);
+printf("\nNumarasi : "); fflush(stdin); gets(kayit.numara);
+printf("\nBolumu : "); fflush(stdin); gets(kayit.bolum);
+printf("\nSinifi : "); fflush(stdin); gets(kayit.sinif);
+
+dosya=fopen("rehber.txt","a");
+
+fprintf(dosya,"%s\t\t%s\t\t%s\t\t%s\t\t%s\n",kayit.ad, kayit.soyad,kayit.numara,kayit.bolum,kayit.sinif);
+
+fclose(dosya);
+
+eklenen++;
+}
+
+void listele_sinif(void){
+
+FILE *dosya;
+
+int i,j=0,yandaki=0,sayac2=0;//yandaki : örneğin 1. sıradaki sayıdan sonra 2. sıradakine bakabilmek için tanımlandı.
+
+char temp1[3],temp2[3],temp3[100];
+
+system("cls");
+
+printf("Ad\t\tSoyad\t\tNumarasi\t\tBolum\t\tSinifi\n");
+printf("--\t\t-----\t\t-------\t\t\t-----\t\t-----");
+
+dosya=fopen("rehber.txt","r");
+
+while(!feof(dosya)){
+
+   fscanf(dosya,"%s %s %s %s %s",kayitlar[sayac1].ad, kayitlar[sayac1].soyad,kayitlar[sayac1].numara,kayitlar[sayac1].bolum,kayitlar[sayac1].sinif);
+   sayac1++;//kayıt sayısını tutuyor.
+
+}//dosyadaki tüm kayıtlar struct yapısındaki bir diziye aktarıldı.
+
+while(sayac1>0){//Bütün kayıtlara bakana kadar döngü devam etsin.
+
+   while(sayac2<sayac1+j){
+
+      for(i=0;i<2;i++){//2 şer 2 şer telefonların ilk 3 hanesine bakıp işlem yapmak için.
+
+         temp1[i]=kayitlar[yandaki].sinif[i];//kontrol edilen telefon ancak tum telefonlar ile karşılaştırma yapıldığında değişeceğinden onun değişkenini(yandaki) farklı yaptım.
+         temp2[i]=kayitlar[sayac2+1].sinif[i];
+      }
+
+      if(strcmp(temp2,temp1)>0){//büyük ise bilgilerin yerini değiştir.       
+         strcpy(temp3,kayitlar[yandaki].sinif);
+         strcpy(kayitlar[yandaki].sinif,kayitlar[sayac2+1].sinif);
+         strcpy(kayitlar[sayac2+1].sinif,temp3);
+         strcpy(temp3,kayitlar[yandaki].ad);
+         strcpy(kayitlar[yandaki].ad,kayitlar[sayac2+1].ad);
+         strcpy(kayitlar[sayac2+1].ad,temp3);
+
+         strcpy(temp3,kayitlar[yandaki].soyad);
+         strcpy(kayitlar[yandaki].soyad,kayitlar[sayac2+1].soyad);
+         strcpy(kayitlar[sayac2+1].soyad,temp3);
+
+         strcpy(temp3,kayitlar[yandaki].bolum);
+         strcpy(kayitlar[yandaki].bolum,kayitlar[sayac2+1].bolum);
+         strcpy(kayitlar[sayac2+1].bolum,temp3);
+         
+          strcpy(temp3,kayitlar[yandaki].numara);
+         strcpy(kayitlar[yandaki].numara,kayitlar[sayac2+1].numara);
+         strcpy(kayitlar[sayac2+1].numara,temp3);
+      }
+
+      sayac2++;
+   }
+
+   sayac2=0;
+
+   j++;// sayac 2 birsonraki islemlerini kayitlar dizisinin sıradaki elemanı için uygulamalı.Bunu j sayesinde yapıyor.
+
+   sayac2+=j;
+   sayac1--;//Her seferinde islem sayısı 1 azalacak.
+
+   yandaki++;//yandaki sayıya geç.
+}
+
+fclose(dosya);
+
+printf("\n");
+
+i=0;
+
+while(strcmp(kayitlar[i].ad,"")!=0){//tum kayıtları ekrana yazdır.
+
+   printf("%s\t\t%s\t\t%s\t\t\%s\t%s\n",kayitlar[i].ad, kayitlar[i].soyad,kayitlar[i].numara,kayitlar[i].bolum,kayitlar[i].sinif);
+
+   i++;
+}
+
+printf("\n\n");
+}
+void listele_bolum(void){
+
+FILE *dosya;
+
+int i,j=0,yandaki=0,sayac2=0;//yandaki : örneğin 1. sıradaki sayıdan sonra 2. sıradakine bakabilmek için tanımlandı.
+
+char temp1[3],temp2[3],temp3[100];
+
+system("cls");
+
+printf("Ad\t\tSoyad\t\tNumarasi\t\tBolum\t\tSinifi\n");
+printf("--\t\t-----\t\t-------\t\t\t-----\t\t-----");
+
+dosya=fopen("rehber.txt","r");
+
+while(!feof(dosya)){
+
+   fscanf(dosya,"%s %s %s %s %s",kayitlar[sayac1].ad, kayitlar[sayac1].soyad,kayitlar[sayac1].numara,kayitlar[sayac1].bolum,kayitlar[sayac1].sinif);
+   sayac1++;//kayıt sayısını tutuyor.
+
+}//dosyadaki tüm kayıtlar struct yapısındaki bir diziye aktarıldı.
+
+while(sayac1>0){//Bütün kayıtlara bakana kadar döngü devam etsin.
+
+   while(sayac2<sayac1+j){
+
+      for(i=0;i<15;i++){//2 şer 2 şer telefonların ilk 3 hanesine bakıp işlem yapmak için.
+
+         temp1[i]=kayitlar[yandaki].bolum[i];//kontrol edilen telefon ancak tum telefonlar ile karşılaştırma yapıldığında değişeceğinden onun değişkenini(yandaki) farklı yaptım.
+         temp2[i]=kayitlar[sayac2+1].bolum[i];
+      }
+
+      if(strcmp(temp2,temp1)>0){//büyük ise bilgilerin yerini değiştir.       
+         strcpy(temp3,kayitlar[yandaki].bolum);
+         strcpy(kayitlar[yandaki].bolum,kayitlar[sayac2+1].bolum);
+         strcpy(kayitlar[sayac2+1].bolum,temp3);
+         strcpy(temp3,kayitlar[yandaki].ad);
+         strcpy(kayitlar[yandaki].ad,kayitlar[sayac2+1].ad);
+         strcpy(kayitlar[sayac2+1].ad,temp3);
+
+         strcpy(temp3,kayitlar[yandaki].soyad);
+         strcpy(kayitlar[yandaki].soyad,kayitlar[sayac2+1].soyad);
+         strcpy(kayitlar[sayac2+1].soyad,temp3);
+
+         strcpy(temp3,kayitlar[yandaki].sinif);
+         strcpy(kayitlar[yandaki].sinif,kayitlar[sayac2+1].sinif);
+         strcpy(kayitlar[sayac2+1].sinif,temp3);
+         
+          strcpy(temp3,kayitlar[yandaki].numara);
+         strcpy(kayitlar[yandaki].numara,kayitlar[sayac2+1].numara);
+         strcpy(kayitlar[sayac2+1].numara,temp3);
+      }
+
+      sayac2++;
+   }
+
+   sayac2=0;
+
+   j++;// sayac 2 birsonraki islemlerini kayitlar dizisinin sıradaki elemanı için uygulamalı.Bunu j sayesinde yapıyor.
+
+   sayac2+=j;
+   sayac1--;//Her seferinde islem sayısı 1 azalacak.
+
+   yandaki++;//yandaki sayıya geç.
+}
+
+fclose(dosya);
+
+printf("\n");
+
+i=0;
+
+while(strcmp(kayitlar[i].ad,"")!=0){//tum kayıtları ekrana yazdır.
+
+   printf("%s\t\t%s\t\t%s\t\t\%s\t%s\n",kayitlar[i].ad, kayitlar[i].soyad,kayitlar[i].numara,kayitlar[i].bolum,kayitlar[i].sinif);
+
+   i++;
+}
+
+printf("\n\n");
+}
+int Guncelle() {
+FILE *dosya,*yeni;
+char aranan[15];
+
+printf("Guncellenecek Kaydin Adi? :"); 
+scanf("%s",&aranan);
+
+dosya=fopen("rehber.txt","r");
+yeni=fopen("rehber1.txt","w");
+
+while(!feof(dosya)){
+
+   fscanf(dosya,"%s %s %s %s %s",kayit.ad,kayit.soyad,kayit.numara,kayit.bolum,kayit.sinif);
+
+   if(strstr(kayit.ad,aranan)){//strcmp(rehber.ad,aranan)==0
+
+      printf("            Yeni Bilgiler:\n\n");//yeni bilgileri al.
+
+      printf("Ad: "); scanf("%s",&kayit.ad);
+
+      printf("Soyad : "); scanf("%s",&kayit.soyad);
+
+      printf("Numarasi : "); scanf("%s",&kayit.numara);
+      printf("Bolumu : "); scanf("%s",&kayit.bolum);
+      printf("Sinifi : "); scanf("%s",&kayit.sinif);
+
+   }
+
+fprintf(yeni,"\n%s\t%s\t%s\t%s\t%s",kayit.ad,kayit.soyad,kayit.numara,kayit.bolum,kayit.sinif);
+
+}
+
+
+remove("rehber.txt");
+rename("rehber1.txt","rehber.txt");
+fclose(dosya);
+fclose(yeni);
+
+return 0;
+
+}
+void ekle_ogretim(void){
+
+FILE *dosya;
+
+system("cls");
+
+printf("            KAYIT EKLE\n");
+printf("\nAd : "); fflush(stdin); gets(kayit1.ad);
+printf("\nSoyad : "); fflush(stdin); gets(kayit1.soyad);
+printf("\nSicil numarasi: "); fflush(stdin); gets(kayit1.sicil);
+printf("\nBolumu : "); fflush(stdin); gets(kayit1.bolum);
+
+
+dosya=fopen("ogretim.txt","a");
+
+fprintf(dosya,"%s\t\t%s\t\t%s\t\t%s\n",kayit1.ad, kayit1.soyad,kayit1.sicil,kayit1.bolum);
+
+fclose(dosya);
+
+eklenen++;
+}
+void listele_ogretimbol(void){
+
+FILE *dosya;
+
+int i,j=0,yandaki=0,sayac2=0;//yandaki : örneğin 1. sıradaki sayıdan sonra 2. sıradakine bakabilmek için tanımlandı.
+
+char temp1[3],temp2[3],temp3[100];
+
+system("cls");
+
+printf("Ad\t\tSoyad\t\tSicil\t\t\tBolum\n");
+printf("--\t\t-----\t\t-------\t\t\t-----");
+
+dosya=fopen("ogretim.txt","r");
+
+while(!feof(dosya)){
+
+   fscanf(dosya,"%s %s %s %s %s",kayitlar1[sayac1].ad, kayitlar1[sayac1].soyad,kayitlar1[sayac1].sicil,kayitlar1[sayac1].bolum);
+   sayac1++;//kayıt sayısını tutuyor.
+
+}//dosyadaki tüm kayıtlar struct yapısındaki bir diziye aktarıldı.
+
+while(sayac1>0){//Bütün kayıtlara bakana kadar döngü devam etsin.
+
+   while(sayac2<sayac1+j){
+
+      for(i=0;i<15;i++){//2 şer 2 şer telefonların ilk 3 hanesine bakıp işlem yapmak için.
+
+         temp1[i]=kayitlar1[yandaki].bolum[i];//kontrol edilen telefon ancak tum telefonlar ile karşılaştırma yapıldığında değişeceğinden onun değişkenini(yandaki) farklı yaptım.
+         temp2[i]=kayitlar1[sayac2+1].bolum[i];
+      }
+
+      if(strcmp(temp2,temp1)>0){//büyük ise bilgilerin yerini değiştir.       
+         strcpy(temp3,kayitlar1[yandaki].bolum);
+         strcpy(kayitlar1[yandaki].bolum,kayitlar1[sayac2+1].bolum);
+         strcpy(kayitlar1[sayac2+1].bolum,temp3);
+         strcpy(temp3,kayitlar1[yandaki].ad);
+         strcpy(kayitlar1[yandaki].ad,kayitlar1[sayac2+1].ad);
+         strcpy(kayitlar1[sayac2+1].ad,temp3);
+
+         strcpy(temp3,kayitlar1[yandaki].soyad);
+         strcpy(kayitlar1[yandaki].soyad,kayitlar1[sayac2+1].soyad);
+         strcpy(kayitlar1[sayac2+1].soyad,temp3);
+
+               
+          strcpy(temp3,kayitlar1[yandaki].sicil);
+         strcpy(kayitlar1[yandaki].sicil,kayitlar1[sayac2+1].sicil);
+         strcpy(kayitlar1[sayac2+1].sicil,temp3);
+      }
+
+      sayac2++;
+   }
+
+   sayac2=0;
+
+   j++;// sayac 2 birsonraki islemlerini kayitlar dizisinin sıradaki elemanı için uygulamalı.Bunu j sayesinde yapıyor.
+
+   sayac2+=j;
+   sayac1--;//Her seferinde islem sayısı 1 azalacak.
+
+   yandaki++;//yandaki sayıya geç.
+}
+
+fclose(dosya);
+
+printf("\n");
+
+i=0;
+
+while(strcmp(kayitlar1[i].ad,"")!=0){//tum kayıtları ekrana yazdır.
+
+   printf("%s\t\t%s\t\t%s\t\t\%s\n",kayitlar1[i].ad, kayitlar1[i].soyad,kayitlar1[i].sicil,kayitlar1[i].bolum);
+
+   i++;
+}
+
+printf("\n\n");
+}
+int Guncelle_ogretim() {
+FILE *dosya,*yeni;
+char aranan[15];
+
+printf("Guncellenecek Kaydin Adi? :"); 
+scanf("%s",&aranan);
+
+dosya=fopen("ogretim.txt","r");
+yeni=fopen("rehber1.txt","w");
+
+while(!feof(dosya)){
+
+   fscanf(dosya,"%s %s %s %s ",kayit1.ad,kayit1.soyad,kayit1.sicil,kayit1.bolum);
+
+   if(strstr(kayit1.ad,aranan)){//strcmp(rehber.ad,aranan)==0
+
+      printf("            Yeni Bilgiler:\n\n");//yeni bilgileri al.
+
+      printf("Ad: "); scanf("%s",&kayit1.ad);
+
+      printf("Soyad : "); scanf("%s",&kayit1.soyad);
+
+      printf("Sicil numarasi : "); scanf("%s",&kayit1.sicil);
+      printf("Bolumu : "); scanf("%s",&kayit1.bolum);
+      
+
+   }
+
+fprintf(yeni,"\n%s\t%s\t%s\t%s",kayit1.ad,kayit1.soyad,kayit1.sicil,kayit1.bolum);
+
+}
+
+
+remove("rehber.txt");
+rename("rehber1.txt","rehber.txt");
+fclose(dosya);
+fclose(yeni);
+
+return 0;
+
+}
+void ekle_ders(void){
+
+FILE *dosya;
+
+system("cls");
+
+printf("            KAYIT EKLE\n");
+printf("\nBolum : "); fflush(stdin); gets(kayit2.bolum);
+printf("\nDersin Adi : "); fflush(stdin); gets(kayit2.ad);
+printf("\nDers Ogretmeni : "); fflush(stdin); gets(kayit2.ogretmen_ad);
+
+
+dosya=fopen("ders.txt","a");
+
+fprintf(dosya,"%s\t\t%s\t\t%s\n",kayit2.bolum, kayit2.ad,kayit2.ogretmen_ad);
+
+fclose(dosya);
+
+eklenen++;
+}
+void listele_ders(void){
+
+FILE *dosya;
+
+int i,j=0,yandaki=0,sayac2=0;//yandaki : örneğin 1. sıradaki sayıdan sonra 2. sıradakine bakabilmek için tanımlandı.
+
+char temp1[3],temp2[3],temp3[100];
+
+system("cls");
+
+printf("Bolum\t\tDers\t\tOgretmen\n");
+printf("-----\t\t-----\t\t-------");
+
+dosya=fopen("ders.txt","r");
+
+while(!feof(dosya)){
+
+   fscanf(dosya,"%s %s %s ",kayitlar2[sayac1].bolum, kayitlar2[sayac1].ad,kayitlar2[sayac1].ogretmen_ad);
+   sayac1++;//kayıt sayısını tutuyor.
+
+}//dosyadaki tüm kayıtlar struct yapısındaki bir diziye aktarıldı.
+
+while(sayac1>0){//Bütün kayıtlara bakana kadar döngü devam etsin.
+
+   while(sayac2<sayac1+j){
+
+      for(i=0;i<2;i++){//2 şer 2 şer telefonların ilk 3 hanesine bakıp işlem yapmak için.
+
+         temp1[i]=kayitlar2[yandaki].ad[i];//kontrol edilen telefon ancak tum telefonlar ile karşılaştırma yapıldığında değişeceğinden onun değişkenini(yandaki) farklı yaptım.
+         temp2[i]=kayitlar2[sayac2+1].ad[i];
+      }
+
+      if(strcmp(temp2,temp1)>0){//büyük ise bilgilerin yerini değiştir.       
+         strcpy(temp3,kayitlar2[yandaki].ad);
+         strcpy(kayitlar2[yandaki].ad,kayitlar2[sayac2+1].ad);
+         strcpy(kayitlar2[sayac2+1].ad,temp3);
+         strcpy(temp3,kayitlar2[yandaki].bolum);
+         strcpy(kayitlar2[yandaki].bolum,kayitlar2[sayac2+1].bolum);
+         strcpy(kayitlar2[sayac2+1].bolum,temp3);
+
+         strcpy(temp3,kayitlar2[yandaki].ogretmen_ad);
+         strcpy(kayitlar2[yandaki].ogretmen_ad,kayitlar2[sayac2+1].ogretmen_ad);
+         strcpy(kayitlar2[sayac2+1].ogretmen_ad,temp3);
+
+      }
+
+      sayac2++;
+   }
+
+   sayac2=0;
+
+   j++;// sayac 2 birsonraki islemlerini kayitlar dizisinin sıradaki elemanı için uygulamalı.Bunu j sayesinde yapıyor.
+
+   sayac2+=j;
+   sayac1--;//Her seferinde islem sayısı 1 azalacak.
+
+   yandaki++;//yandaki sayıya geç.
+}
+
+fclose(dosya);
+
+printf("\n");
+
+i=0;
+
+while(strcmp(kayitlar2[i].ad,"")!=0){//tum kayıtları ekrana yazdır.
+
+   printf("%s\t%s\t%s\n",kayitlar2[i].bolum, kayitlar2[i].ad,kayitlar2[i].ogretmen_ad);
+
+   i++;
+}
+
+printf("\n\n");
+}
+int Guncelle_ders() {
+FILE *dosya,*yeni;
+char aranan[15];
+
+printf("Guncellenecek Dersin Adi? :"); 
+scanf("%s",&aranan);
+
+dosya=fopen("ders.txt","r");
+yeni=fopen("rehber1.txt","w");
+
+while(!feof(dosya)){
+
+   fscanf(dosya,"%s %s %s  ",kayit2.bolum,kayit2.ad,kayit2.ogretmen_ad);
+
+   if(strstr(kayit1.ad,aranan)){//strcmp(rehber.ad,aranan)==0
+
+      printf("            Yeni Bilgiler:\n\n");//yeni bilgileri al.
+
+      printf("Bolum: "); scanf("%s",&kayit2.bolum);
+
+      printf("Dersin adi : "); scanf("%s",&kayit2.ad);
+
+      printf("Ders ogretmeni : "); scanf("%s",&kayit2.ogretmen_ad);
+      
+      
+
+   }
+
+fprintf(yeni,"\n%s\t%s\t%s",kayit2.bolum,kayit2.ad,kayit2.ogretmen_ad);
+
+}
+
+
+remove("ders.txt");
+rename("rehber1.txt","rehber.txt");
+fclose(dosya);
+fclose(yeni);
+
+return 0;
+
+}
+void ekle_not(void){
+
+FILE *dosya;
+
+system("cls");
+
+printf("            KAYIT EKLE\n");
+printf("\nOgrenci adİ : "); fflush(stdin); gets(kayit3.ad);
+printf("\nOgrenci soyad : "); fflush(stdin); gets(kayit3.soyad);
+printf("\nNumarasi : "); fflush(stdin); gets(kayit3.numara);
+printf("\nBolumu : "); fflush(stdin); gets(kayit3.bolum);
+printf("\nDersin Adi : "); fflush(stdin); gets(kayit3.ders_ad);
+  
+
+dosya=fopen("not.txt","a");
+
+fprintf(dosya,"%s\t\t%s\t\t%s\t\t%s\t\t%s\n",kayit3.ad, kayit3.soyad,kayit3.numara,kayit3.bolum,kayit3.ders_ad);
+
+fclose(dosya);
+
+eklenen++;
+}
+void ekle_not1(void){
+
+FILE *dosya;
+
+system("cls");
+
+printf("            KAYIT EKLE\n");
+printf("\nOgrenci adİ : "); fflush(stdin); gets(kayit3.ad);
+printf("\nOgrenci soyad : "); fflush(stdin); gets(kayit3.soyad);
+printf("\nNumarasi : "); fflush(stdin); gets(kayit3.numara);
+printf("\nBolum : "); fflush(stdin); gets(kayit3.bolum);
+printf("\nDersin Adi : "); fflush(stdin); gets(kayit3.ders_ad);
+printf("\nNotu : "); fflush(stdin); gets(kayit3.not1);
+  
+
+dosya=fopen("not.txt","a");
+
+fprintf(dosya,"%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n",kayit3.ad, kayit3.soyad,kayit3.numara,kayit3.bolum,kayit3.ders_ad,kayit3.not1);
+
+fclose(dosya);
+
+eklenen++;
+}
+void arama()
+{
+     
+     int sayac;
+     char aranan[30];
+     FILE *dosya;
+     printf("Aranacak Kaydin Adi? :"); 
+     scanf("%s",&aranan);
+     dosya=fopen("rehber.txt","r");     
+     while(!feof(dosya))
+     {
+      if(aranan==kayit.ad)
+      {
+      sayac++;
+      }
+      else
+      {
+      }
+     }
+     if(sayac>0)
+     {
+      printf("\n\t%s \t%lld \t%lld",kayit.ad,kayit.soyad,kayit.numara);
+     }
+     
+     
+     
+     fclose(dosya);
+}

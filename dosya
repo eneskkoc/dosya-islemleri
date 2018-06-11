@@ -16,7 +16,10 @@ void listele_ders(void);
 int Guncelle_ders();
 void ekle_not(void);
 void ekle_not1(void);
-void arama();
+void arama_isim();
+void arama_numara();
+void arama_sicil();
+void arama_ders();
 
 
 struct ogrenci{
@@ -39,6 +42,7 @@ struct ders
     char ad[30];
 	char bolum[20];
 	char ogretmen_ad[40];
+	char ogretmen_soyad[30];
 
 }kayit2,kayitlar2[40];
 struct notlar
@@ -61,32 +65,35 @@ main(){
 void menu(){
 int secim;
 printf("\t\t\t\t\tOGRENCI\n\n");
-printf("1-Ekle /// 2-Sinifa Gore Listele ///3-guncelle///4-arama///5-Bolume Gore Listele\n");
+printf("1-Ekle /// 2-Sinifa Gore Listele ///3-guncelle///4-Isme Gore Arama///5-Numaraya Gore Arama///6-Bolume Gore Listele\n");
 printf("/////////////////////////////////////////////////////////////////////////\n\n");
 printf("\t\t\t\t\tOGRETIM\n\n");
-printf("6-Ekle///7-Bolume Gore Listele///8-Guncelle\n\n");
+printf("7-Ekle///8-Sicil Numarasina Gore Arama ///9-Bolume Gore Listele///A-Guncelle\n\n");
 printf("////////////////////////////////////////////////////////////////////////\n\n");
 printf("\t\t\t\t\tDERS\n\n");
-printf("9-Ekle///A-Ders Listele///B-Ders Guncelle\n\n");
+printf("B-Ekle///C-Ders Listele///D-Ders Guncelle///E-Ders Arama\n\n");
 printf("\t\t\t\t\tNOT\n\n");
 printf("////////////////////////////////////////////////////////////////////////\n\n");
-printf("C-Ogrenci Ders Ekle///D-Ogrenci Not Ekle\n\n");
+printf("F-Ogrenci Ders Ekle///G-Ogrenci Not Ekle\n\n");
 printf("Seciminiz? : "); secim=getch();
 
   switch (secim){
    case '1':system("cls"); ekle_ogrenci(); menu(); break;     
    case '2':listele_sinif(); menu(); break;
    case '3': Guncelle(); menu(); break;
-   case '4': arama(); menu(); break;
-   case '5': listele_bolum(); menu(); break;
-   case '6': ekle_ogretim(); menu(); break;
-   case '7': listele_ogretimbol();menu(); break;
-   case '8':Guncelle_ogretim();menu(); break;
-   case '9':ekle_ders();menu(); break;
-   case 'a': listele_ders();menu(); break;
-   case 'b':Guncelle_ders();menu(); break;
-   case 'c':ekle_not();menu(); break;
-   case 'd':ekle_not1();menu(); break;
+   case '4': arama_isim(); menu(); break;
+   case '5': arama_numara();menu(); break;
+   case '6': listele_bolum(); menu(); break;
+   case '7': ekle_ogretim(); menu(); break;
+   case '8': arama_sicil();menu(); break;
+   case '9': listele_ogretimbol();menu(); break;
+   case 'a':Guncelle_ogretim();menu(); break;
+   case 'b':ekle_ders();menu(); break;
+   case 'c': listele_ders();menu(); break;
+   case 'd':Guncelle_ders();menu(); break;
+   case 'e': arama_ders();menu(); break;
+   case 'f':ekle_not();menu(); break;
+   case 'g':ekle_not1();menu(); break;
    default:system("cls"); printf("Hatali Secim!\n\n"); menu();
   }
 
@@ -105,7 +112,7 @@ printf("\nNumarasi : "); fflush(stdin); gets(kayit.numara);
 printf("\nBolumu : "); fflush(stdin); gets(kayit.bolum);
 printf("\nSinifi : "); fflush(stdin); gets(kayit.sinif);
 
-dosya=fopen("rehber.txt","a");
+dosya=fopen("ogrenci.txt","a");
 
 fprintf(dosya,"%s\t\t%s\t\t%s\t\t%s\t\t%s\n",kayit.ad, kayit.soyad,kayit.numara,kayit.bolum,kayit.sinif);
 
@@ -127,7 +134,7 @@ system("cls");
 printf("Ad\t\tSoyad\t\tNumarasi\t\tBolum\t\tSinifi\n");
 printf("--\t\t-----\t\t-------\t\t\t-----\t\t-----");
 
-dosya=fopen("rehber.txt","r");
+dosya=fopen("ogrenci.txt","r");
 
 while(!feof(dosya)){
 
@@ -208,7 +215,7 @@ system("cls");
 printf("Ad\t\tSoyad\t\tNumarasi\t\tBolum\t\tSinifi\n");
 printf("--\t\t-----\t\t-------\t\t\t-----\t\t-----");
 
-dosya=fopen("rehber.txt","r");
+dosya=fopen("ogrenci.txt","r");
 
 while(!feof(dosya)){
 
@@ -280,17 +287,17 @@ int Guncelle() {
 FILE *dosya,*yeni;
 char aranan[15];
 
-printf("Guncellenecek Kaydin Adi? :"); 
+printf("Guncellenecek Ogrencinin Adi :"); 
 scanf("%s",&aranan);
 
-dosya=fopen("rehber.txt","r");
+dosya=fopen("ogrenci.txt","r");
 yeni=fopen("rehber1.txt","w");
 
 while(!feof(dosya)){
 
    fscanf(dosya,"%s %s %s %s %s",kayit.ad,kayit.soyad,kayit.numara,kayit.bolum,kayit.sinif);
 
-   if(strstr(kayit.ad,aranan)){//strcmp(rehber.ad,aranan)==0
+   if(strstr(kayit.ad,aranan)){//strcmp(kayit.ad,aranan)==0
 
       printf("            Yeni Bilgiler:\n\n");//yeni bilgileri al.
 
@@ -308,11 +315,11 @@ fprintf(yeni,"\n%s\t%s\t%s\t%s\t%s",kayit.ad,kayit.soyad,kayit.numara,kayit.bolu
 
 }
 
-
-remove("rehber.txt");
-rename("rehber1.txt","rehber.txt");
 fclose(dosya);
 fclose(yeni);
+remove("ogrenci.txt");
+rename("rehber1.txt","ogrenci.txt");
+
 
 return 0;
 
@@ -420,7 +427,7 @@ int Guncelle_ogretim() {
 FILE *dosya,*yeni;
 char aranan[15];
 
-printf("Guncellenecek Kaydin Adi? :"); 
+printf("Guncellenecek Ogretmenin Adi :"); 
 scanf("%s",&aranan);
 
 dosya=fopen("ogretim.txt","r");
@@ -430,7 +437,7 @@ while(!feof(dosya)){
 
    fscanf(dosya,"%s %s %s %s ",kayit1.ad,kayit1.soyad,kayit1.sicil,kayit1.bolum);
 
-   if(strstr(kayit1.ad,aranan)){//strcmp(rehber.ad,aranan)==0
+   if(strstr(kayit1.ad,aranan)){//strcmp(kayit1.ad,aranan)==0
 
       printf("            Yeni Bilgiler:\n\n");//yeni bilgileri al.
 
@@ -448,11 +455,11 @@ fprintf(yeni,"\n%s\t%s\t%s\t%s",kayit1.ad,kayit1.soyad,kayit1.sicil,kayit1.bolum
 
 }
 
-
-remove("ogretim.txt");
-rename("rehber1.txt","ogretim.txt");
 fclose(dosya);
 fclose(yeni);
+remove("ogretim.txt");
+rename("rehber1.txt","ogretim.txt");
+
 
 return 0;
 
@@ -466,12 +473,14 @@ system("cls");
 printf("            KAYIT EKLE\n");
 printf("\nBolum : "); fflush(stdin); gets(kayit2.bolum);
 printf("\nDersin Adi : "); fflush(stdin); gets(kayit2.ad);
-printf("\nDers Ogretmeni : "); fflush(stdin); gets(kayit2.ogretmen_ad);
+printf("\nOgretmen Adi : "); fflush(stdin); gets(kayit2.ogretmen_ad);
+printf("\nOgretmen Soyad : "); fflush(stdin); gets(kayit2.ogretmen_soyad);
+
 
 
 dosya=fopen("ders.txt","a");
 
-fprintf(dosya,"%s\t\t%s\t\t%s\n",kayit2.bolum, kayit2.ad,kayit2.ogretmen_ad);
+fprintf(dosya,"%s\t\t%s\t\t%s\t\t%s\n",kayit2.bolum, kayit2.ad,kayit2.ogretmen_ad,kayit2.ogretmen_soyad);
 
 fclose(dosya);
 
@@ -487,14 +496,14 @@ char temp1[3],temp2[3],temp3[100];
 
 system("cls");
 
-printf("Bolum\t\tDers\t\tOgretmen\n");
-printf("-----\t\t-----\t\t-------");
+printf("Bolum\t\tDers\t\tOgretmenAd\t\tOgretmenSoyad\n");
+printf("-----\t\t-----\t\t-------\t\t\t-------");
 
 dosya=fopen("ders.txt","r");
 
 while(!feof(dosya)){
 
-   fscanf(dosya,"%s %s %s ",kayitlar2[sayac1].bolum, kayitlar2[sayac1].ad,kayitlar2[sayac1].ogretmen_ad);
+   fscanf(dosya,"%s %s %s %s",kayitlar2[sayac1].bolum, kayitlar2[sayac1].ad,kayitlar2[sayac1].ogretmen_ad,kayitlar2[sayac1].ogretmen_soyad);
    sayac1++;//kayıt sayısını tutuyor.
 
 }//dosyadaki tüm kayıtlar struct yapısındaki bir diziye aktarıldı.
@@ -520,6 +529,9 @@ while(sayac1>0){//Bütün kayıtlara bakana kadar döngü devam etsin.
          strcpy(temp3,kayitlar2[yandaki].ogretmen_ad);
          strcpy(kayitlar2[yandaki].ogretmen_ad,kayitlar2[sayac2+1].ogretmen_ad);
          strcpy(kayitlar2[sayac2+1].ogretmen_ad,temp3);
+         strcpy(temp3,kayitlar2[yandaki].ogretmen_soyad);
+         strcpy(kayitlar2[yandaki].ogretmen_soyad,kayitlar2[sayac2+1].ogretmen_soyad);
+         strcpy(kayitlar2[sayac2+1].ogretmen_soyad,temp3);
 
       }
 
@@ -544,7 +556,7 @@ i=0;
 
 while(strcmp(kayitlar2[i].ad,"")!=0){//tum kayıtları ekrana yazdır.
 
-   printf("%s\t%s\t%s\n",kayitlar2[i].bolum, kayitlar2[i].ad,kayitlar2[i].ogretmen_ad);
+   printf("%s\t\t%s\t%s\t\t\t%s\n",kayitlar2[i].bolum, kayitlar2[i].ad,kayitlar2[i].ogretmen_ad,kayitlar2[i].ogretmen_soyad);
 
    i++;
 }
@@ -555,7 +567,7 @@ int Guncelle_ders() {
 FILE *dosya,*yeni;
 char aranan[15];
 
-printf("Guncellenecek Dersin Adi? :"); 
+printf("Guncellenecek Dersin Adi :"); 
 scanf("%s",&aranan);
 
 dosya=fopen("ders.txt","r");
@@ -563,9 +575,9 @@ yeni=fopen("rehber1.txt","w");
 
 while(!feof(dosya)){
 
-   fscanf(dosya,"%s %s %s  ",kayit2.bolum,kayit2.ad,kayit2.ogretmen_ad);
+   fscanf(dosya,"%s %s %s %s  ",kayit2.bolum,kayit2.ad,kayit2.ogretmen_ad,kayit2.ogretmen_soyad);
 
-   if(strstr(kayit1.ad,aranan)){//strcmp(rehber.ad,aranan)==0
+   if(strstr(kayit2.ad,aranan)){//strcmp(kayit2.ad,aranan)==0
 
       printf("            Yeni Bilgiler:\n\n");//yeni bilgileri al.
 
@@ -573,21 +585,22 @@ while(!feof(dosya)){
 
       printf("Dersin adi : "); scanf("%s",&kayit2.ad);
 
-      printf("Ders ogretmeni : "); scanf("%s",&kayit2.ogretmen_ad);
+      printf("Ogretmen Adi : "); scanf("%s",&kayit2.ogretmen_ad);
+      printf("Ogretmen Soyadi : "); scanf("%s",&kayit2.ogretmen_soyad);
       
       
 
    }
 
-fprintf(yeni,"\n%s\t%s\t%s",kayit2.bolum,kayit2.ad,kayit2.ogretmen_ad);
+fprintf(yeni,"\n%s\t%s\t%s\t%s",kayit2.bolum,kayit2.ad,kayit2.ogretmen_ad,kayit2.ogretmen_ad);
 
 }
 
-
-remove("ders.txt");
-rename("rehber1.txt","ders.txt");
 fclose(dosya);
 fclose(yeni);
+remove("ders.txt");
+rename("rehber1.txt","ders.txt");
+
 
 return 0;
 
@@ -599,7 +612,7 @@ FILE *dosya;
 system("cls");
 
 printf("            KAYIT EKLE\n");
-printf("\nOgrenci adİ : "); fflush(stdin); gets(kayit3.ad);
+printf("\nOgrenci adi : "); fflush(stdin); gets(kayit3.ad);
 printf("\nOgrenci soyad : "); fflush(stdin); gets(kayit3.soyad);
 printf("\nNumarasi : "); fflush(stdin); gets(kayit3.numara);
 printf("\nBolumu : "); fflush(stdin); gets(kayit3.bolum);
@@ -637,7 +650,7 @@ fclose(dosya);
 
 eklenen++;
 }
-void arama()
+void arama_isim()
 {
      
      int sayac;
@@ -645,23 +658,92 @@ void arama()
      FILE *dosya;
      printf("Aranacak Kaydin Adi? :"); 
      scanf("%s",&aranan);
-     dosya=fopen("rehber.txt","r");     
+     printf("Ad\t\tSoyad\t\tNumarasi\t\tBolum\t\tSinifi\n");
+     printf("--\t\t-----\t\t-------\t\t\t-----\t\t-----\n");
+     dosya=fopen("ogrenci.txt","r");     
      while(!feof(dosya))
      {
-      if(aranan==kayit.ad)
+       fscanf(dosya,"%s %s %s %s %s",kayit.ad,kayit.soyad,kayit.numara,kayit.bolum,kayit.sinif);
+     
+     
+      if(strcmp(kayit.ad,aranan)==0)
       {
-      sayac++;
+         printf("%s \t\t%s\t\t %s\t\t %s\t %s\n\n",kayit.ad,kayit.soyad,kayit.numara,kayit.bolum,kayit.sinif);                           
+    
       }
-      else
-      {
-      }
-     }
-     if(sayac>0)
+   
+     }  
+     fclose(dosya);
+}
+void arama_numara()
+{
+     
+     char numara[30];
+     FILE *dosya;
+     printf("Aranacak Kaydin Numarasi :"); 
+     scanf("%s",&numara);
+     printf("Ad\t\tSoyad\t\tNumarasi\t\tBolum\t\tSinifi\n");
+     printf("--\t\t-----\t\t-------\t\t\t-----\t\t-----\n");
+     dosya=fopen("ogrenci.txt","r");     
+     while(!feof(dosya))
      {
-      printf("\n\t%s \t%lld \t%lld",kayit.ad,kayit.soyad,kayit.numara);
-     }
+       fscanf(dosya,"%s %s %s %s %s",kayit.ad,kayit.soyad,kayit.numara,kayit.bolum,kayit.sinif);
      
      
+      if(strcmp(kayit.numara,numara)==0)
+      {
+         printf("%s \t\t%s\t\t %s\t\t %s\t %s\n\n",kayit.ad,kayit.soyad,kayit.numara,kayit.bolum,kayit.sinif);                           
+    
+      }
+   
+     }  
+     fclose(dosya);
+}
+void arama_sicil()
+{
      
+     char sicil[30];
+     FILE *dosya;
+     printf("Aranacak Kaydin Sicl Numarasi :"); 
+     scanf("%s",&sicil);
+     printf("Ad\t\tSoyad\t\tSicil\t\t\tBolum\n");
+     printf("--\t\t-----\t\t-------\t\t\t-----\n");
+     dosya=fopen("ogretim.txt","r");     
+     while(!feof(dosya))
+     {
+       fscanf(dosya,"%s %s %s %s ",kayit1.ad,kayit1.soyad,kayit1.sicil,kayit1.bolum);
+     
+     
+      if(strcmp(kayit1.sicil,sicil)==0)
+      {
+         printf("%s\t\t%s\t\t%s\t\t\%s \n\n",kayit1.ad,kayit1.soyad,kayit1.sicil,kayit1.bolum);                           
+    
+      }
+   
+     }  
+     fclose(dosya);
+}
+void arama_ders()
+{
+     
+     char ders[30];
+     FILE *dosya;
+     printf("Aranacak Dersin Adi :"); 
+     scanf("%s",&ders);
+     printf("Bolum\t\tDersAd\t\tAd\t\t\tSoyad\n");
+     printf("--\t\t-----\t\t-------\t\t\t-----\n");
+     dosya=fopen("ders.txt","r");     
+     while(!feof(dosya))
+     {
+        fscanf(dosya,"%s %s %s %s  ",kayit2.bolum,kayit2.ad,kayit2.ogretmen_ad,kayit2.ogretmen_soyad);
+     
+     
+      if(strcmp(kayit2.ad,ders)==0)
+      {
+         printf("%s\t\t%s\t%s\t\t\t\%s\n\n",kayit2.bolum,kayit2.ad,kayit2.ogretmen_ad,kayit2.ogretmen_soyad);                           
+    
+      }
+   
+     }  
      fclose(dosya);
 }

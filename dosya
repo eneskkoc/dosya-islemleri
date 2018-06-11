@@ -449,8 +449,8 @@ fprintf(yeni,"\n%s\t%s\t%s\t%s",kayit1.ad,kayit1.soyad,kayit1.sicil,kayit1.bolum
 }
 
 
-remove("rehber.txt");
-rename("rehber1.txt","rehber.txt");
+remove("ogretim.txt");
+rename("rehber1.txt","ogretim.txt");
 fclose(dosya);
 fclose(yeni);
 
@@ -585,7 +585,7 @@ fprintf(yeni,"\n%s\t%s\t%s",kayit2.bolum,kayit2.ad,kayit2.ogretmen_ad);
 
 
 remove("ders.txt");
-rename("rehber1.txt","rehber.txt");
+rename("rehber1.txt","ders.txt");
 fclose(dosya);
 fclose(yeni);
 
